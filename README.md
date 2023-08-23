@@ -5,6 +5,6 @@ The topology will look like this:
 
 ![image](https://github.com/quiveringbacon/Azure2securehubwithIntentandS2S/assets/128983862/d2044a78-766f-4d0c-a261-1574c4ee8fb7)
 
-You can run Terraform right from the Azure cloud shell by cloning this git repository with "git clone https://github.com/quiveringbacon/Azures2securehubwithIntentandS2S.git ./terraform".
+You can run Terraform right from the Azure cloud shell by cloning this git repository with "git clone https://github.com/quiveringbacon/Azure2securehubwithIntentandS2S.git ./terraform".
 
 Then, "cd terraform" then, "terraform init" and finally "terraform apply -auto-approve" to deploy.
