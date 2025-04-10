@@ -1,18 +1,10 @@
-terraform {
-  required_providers {
-    azapi = {
-      source = "azure/azapi"
-    }
-  }
-}
+
 
 provider "azurerm" {
 features {}
 subscription_id = var.F-SubscriptionID
 }
 
-provider "azapi" {
-}
 
 #variables
 /*
@@ -606,72 +598,36 @@ resource "azurerm_firewall" "azfw2" {
   
 }
 
-resource "azapi_resource" "hub1_route_intent" {
-  name      = "route_intent_hub1"
-  parent_id = azurerm_virtual_hub.vhub1.id
-  type      = "Microsoft.Network/virtualHubs/routingIntent@2022-09-01"
+resource "azurerm_virtual_hub_routing_intent" "hub1_route_intent" {
+  name           = "route_intent_hub1"
+  virtual_hub_id = azurerm_virtual_hub.vhub1.id
 
-  body = jsonencode({
-    properties = {
-      "routingPolicies": [
-      {
-        "name": "InternetTraffic",
-        "destinations": [
-          "Internet"
-        ],
-        "nextHop": "${azurerm_firewall.azfw.id}"
-      },
-      {
-        "name": "PrivateTrafficPolicy",
-        "destinations": [
-          "PrivateTraffic"
-        ],
-        "nextHop": "${azurerm_firewall.azfw.id}"
-        }
-      ]
-    }
-  })
-
-  depends_on = [
-    azurerm_virtual_hub.vhub1,
-    azurerm_firewall.azfw,
-    azurerm_vpn_gateway.hub1vpngw,
-    
-  ]
+  routing_policy {
+    name         = "InternetTrafficPolicy"
+    destinations = ["Internet"]
+    next_hop     = azurerm_firewall.azfw.id
+  }
+  routing_policy {
+    name         = "PrivateTrafficPolicy"
+    destinations = ["PrivateTraffic"]
+    next_hop     = azurerm_firewall.azfw.id
+  }
 }
 
-resource "azapi_resource" "hub2_route_intent" {
-  name      = "route_intent_hub2"
-  parent_id = azurerm_virtual_hub.vhub2.id
-  type      = "Microsoft.Network/virtualHubs/routingIntent@2022-09-01"
+resource "azurerm_virtual_hub_routing_intent" "hub2_route_intent" {
+  name           = "route_intent_hub2"
+  virtual_hub_id = azurerm_virtual_hub.vhub2.id
 
-  body = jsonencode({
-    properties = {
-      "routingPolicies": [
-      {
-        "name": "InternetTraffic",
-        "destinations": [
-          "Internet"
-        ],
-        "nextHop": "${azurerm_firewall.azfw2.id}"
-      },
-      {
-        "name": "PrivateTrafficPolicy",
-        "destinations": [
-          "PrivateTraffic"
-        ],
-        "nextHop": "${azurerm_firewall.azfw2.id}"
-        }
-      ]
-    }
-  })
-
-  depends_on = [
-    azurerm_virtual_hub.vhub2,
-    azurerm_firewall.azfw2,
-    azurerm_vpn_gateway.hub2vpngw,
-    
-  ]
+  routing_policy {
+    name         = "InternetTrafficPolicy"
+    destinations = ["Internet"]
+    next_hop     = azurerm_firewall.azfw2.id
+  }
+  routing_policy {
+    name         = "PrivateTrafficPolicy"
+    destinations = ["PrivateTraffic"]
+    next_hop     = azurerm_firewall.azfw2.id
+  }
 }
 
 #Public ip's
